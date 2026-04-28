@@ -25,7 +25,9 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Run tests
-        run: dotnet test backend/TaskApi.csproj
+        run: |
+          cd backend
+          dotnet test TaskApi.csproj
 
   # ── Job 2: Build and Push Docker Images ──
   build-and-push:
