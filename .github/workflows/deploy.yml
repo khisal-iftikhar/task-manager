@@ -43,8 +43,7 @@ jobs:
       # TODO: Add a step to run .NET tests
       # Hint: cd backend && dotnet test
       - name: Run tests
-        run: |
-          echo "TODO: Run backend tests here"
+        run: dotnet test backend/TaskApi.csproj
 
   # ── Job 2: Build and Push Docker Images ──
   build-and-push:
@@ -57,29 +56,24 @@ jobs:
 
       # TODO: Log in to Docker Hub
       # Hint: Use the docker/login-action@v3 action
-      #   with:
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Login to Docker Hub
-        run: |
-          echo "TODO: Login to Docker Hub"
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       # TODO: Build and push the backend Docker image
-      # Hint:
-      #   docker build -t ${{ secrets.DOCKER_USERNAME }}/taskmanager-backend:latest ./backend
-      #   docker push ${{ secrets.DOCKER_USERNAME }}/taskmanager-backend:latest
       - name: Build and push backend image
         run: |
-          echo "TODO: Build and push backend image"
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/taskmanager-backend:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/taskmanager-backend:latest
 
       # TODO: Build and push the frontend Docker image
-      # Hint: Don't forget the --build-arg for REACT_APP_API_URL
-      #   docker build -t ${{ secrets.DOCKER_USERNAME }}/taskmanager-frontend:latest \
-      #     --build-arg REACT_APP_API_URL=/api ./frontend
-      #   docker push ${{ secrets.DOCKER_USERNAME }}/taskmanager-frontend:latest
       - name: Build and push frontend image
         run: |
-          echo "TODO: Build and push frontend image"
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/taskmanager-frontend:latest \
+            --build-arg REACT_APP_API_URL=/api ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/taskmanager-frontend:latest
 
   # ── Job 3: Deploy to Railway ──
   deploy:
@@ -91,19 +85,9 @@ jobs:
         uses: actions/checkout@v4
 
       # TODO: Install the Railway CLI and trigger a redeploy
-      # Hint: Install the CLI, then use it to redeploy your services.
-      #   npm install -g @railway/cli
-      #
-      #   The Railway CLI uses the RAILWAY_TOKEN env variable for auth.
-      #   You can trigger a redeploy with:
-      #     railway redeploy --service <SERVICE_ID> --yes
-      #
-      #   You'll need to find your service IDs from the Railway dashboard
-      #   (click a service → Settings → Service ID)
-      #
-      #   Set the RAILWAY_TOKEN as an environment variable:
-      #   env:
-      #     RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       - name: Deploy to Railway
         run: |
-          echo "TODO: Install Railway CLI and trigger redeploy"
+          npm install -g @railway/cli
+          railway redeploy --yes
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
